@@ -9,7 +9,9 @@ import { PeliculasComponent } from './pages/peliculas/peliculas.component';
 const routes: Routes = [
   {path:'home',component: HomeComponent},
   {path:'buscar',component: BuscarComponent},
-  {path:'peliculas',component: PeliculasComponent},
+  {path:'buscar/:texto',component: BuscarComponent},
+  {path:'pelicula/:id/:pag',component: PeliculasComponent},
+  {path:'pelicula/:id/:pag/:busqueda',component: PeliculasComponent},
   {path:'**', pathMatch: 'full',redirectTo:'home'},
 ];
 

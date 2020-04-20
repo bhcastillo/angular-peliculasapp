@@ -1,10 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import {
-  HttpClientModule,
-  HttpClientJsonpModule,
-  HttpClient,
-} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -15,10 +11,10 @@ export class PeliculasService {
   private urlMoviedb: string = 'https://api.themoviedb.org/3';
   peliculas: any[] = [];
   constructor(private http: HttpClient) {}
-  getCaterleta() {
+  getCarteleta() {
     let desde = new Date();
     let hasta = new Date();
-    hasta.setDate(hasta.getDate() + 11);
+    hasta.setDate(hasta.getDate() + 7);
     let desdeStr = `${desde.getFullYear()}-0${
       desde.getMonth() + 1
     }-${desde.getDate()}`;
@@ -27,15 +23,19 @@ export class PeliculasService {
     }-${hasta.getDate()}`;
     console.log(hastaStr);
     let url = `${this.urlMoviedb}/discover/movie?primary_release_date.gte=${desdeStr}&primary_release_date.lte=${hastaStr}&api_key=${this.apiKey}`;
-    return this.http.jsonp(url, 'callback');
+    return this.http.jsonp(url, 'callback').pipe(
+      map((res:any)=>{return res.results}))
+    
   }
   getPopulares() {
     let url = `${this.urlMoviedb}/discover/movie?sort_by=popularity.desc&api_key=${this.apiKey}&language=es`;
-    return this.http.jsonp(url, 'callback');
+    return this.http.jsonp(url, 'callback').pipe(
+      map((res:any)=>{return res.results}))
   }
   getPopularesNinos() {
     let url = `${this.urlMoviedb}/discover/movie?certification_country=US&certification.lte=G&sort_by=popularity.desc&api_key=${this.apiKey}&language=es`;
-    return this.http.jsonp(url, 'callback');
+    return this.http.jsonp(url, 'callback').pipe(
+      map((res:any)=>{return res.results}))
   }
   buscarPelicula(texto: string) {
     let url = `${this.urlMoviedb}/search/movie?query=${texto}&sort_by=popularity.desc&api_key=${this.apiKey}&language=es`;
@@ -43,8 +43,11 @@ export class PeliculasService {
     return this.http.jsonp(url, 'callback').pipe(
       map((res: any) => {
         this.peliculas = res.results;
-        console.log(this.peliculas);
       })
     );
+  }
+  getPelicula(pelicula:string) {
+    let url = `${this.urlMoviedb}/movie/${pelicula}?api_key=${this.apiKey}&language=es`;
+    return this.http.jsonp(url, 'callback')
   }
 }
